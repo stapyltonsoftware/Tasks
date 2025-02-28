@@ -7,11 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Tasks.Core.Application.Data;
 using Tasks.Core.Application.DTOs;
+using Tasks.Core.Domain.Entities;
 
 namespace Tasks.Core.Application.Features.ToDos.GetToDos
 {
     public class GetToDosQuery : IRequest<GetToDosResponse>
     {
+        public string Search { get; set; }
+        public bool IncludeCompleted { get; set; }
     }
 
     public class GetToDosQueryHandler : IRequestHandler<GetToDosQuery, GetToDosResponse>
@@ -27,7 +30,12 @@ namespace Tasks.Core.Application.Features.ToDos.GetToDos
 
         public async Task<GetToDosResponse> Handle(GetToDosQuery request, CancellationToken cancellationToken)
         {
-            var todos = await _toDoRepository.GetToDosAsync();
+            IEnumerable<ToDo> todos = new List<ToDo>();
+
+            todos = string.IsNullOrEmpty(request.Search)
+                ? await _toDoRepository.GetToDosAsync(request.IncludeCompleted)
+                : await _toDoRepository.SearchToDosAsync(request.IncludeCompleted, request.Search);
+
             return new GetToDosResponse(_mapper.Map<IEnumerable<ToDoDTO>>(todos));
         }
     }

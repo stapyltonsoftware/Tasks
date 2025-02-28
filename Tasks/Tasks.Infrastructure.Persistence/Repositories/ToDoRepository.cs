@@ -31,9 +31,35 @@ namespace Tasks.Infrastructure.Persistence.Repositories
             await Task.CompletedTask;
         }
 
-        public async Task<IEnumerable<ToDo>> GetToDosAsync()
+        public async Task<ToDo> GetToDoAsync(int id)
         {
-            return await _dbContext.ToDos.ToListAsync();
+            return await _dbContext.ToDos
+                .Include(x => x.Category)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<IEnumerable<ToDo>> GetToDosAsync(bool includeCompleted)
+        {
+            var query = _dbContext.ToDos
+                                .Include(x => x.Category)
+                                .AsQueryable();
+
+            if (!includeCompleted)
+                query = query.Where(x => !x.Completed.HasValue);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<ToDo>> SearchToDosAsync(bool includeCompleted, string search)
+        {
+            var query = _dbContext.ToDos.Where(x => x.Description.ToLower().Contains(search.ToLower()))
+                .Include(x => x.Category)
+                .AsQueryable();
+
+            if (!includeCompleted)
+                query = query.Where(x => !x.Completed.HasValue);
+
+            return await query.ToListAsync();
         }
 
         public async Task<ToDo> UpdateToDoAsync(ToDo toDo)

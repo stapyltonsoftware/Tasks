@@ -10,5 +10,6 @@ namespace Tasks.Core.Application.Data
     public interface ICategoryRepository
     {
         Task<Category> GetCategoryByIdAsync(int id);
+        Task<IEnumerable<Category>> GetAllCategoriesAsync();
     }
 }

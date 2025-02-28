@@ -18,6 +18,11 @@ namespace Tasks.Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
+        {
+            return await _dbContext.Categories.ToListAsync();
+        }
+
         public async Task<Category> GetCategoryByIdAsync(int id)
         {
             return await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);

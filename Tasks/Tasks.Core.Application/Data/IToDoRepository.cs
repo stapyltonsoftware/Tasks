@@ -9,7 +9,9 @@ namespace Tasks.Core.Application.Data
 {
     public interface IToDoRepository
     {
-        Task<IEnumerable<ToDo>> GetToDosAsync();
+        Task<IEnumerable<ToDo>> GetToDosAsync(bool includeCompleted);
+        Task<IEnumerable<ToDo>> SearchToDosAsync(bool includeCompleted, string search);
+        Task<ToDo> GetToDoAsync(int id);
         Task<ToDo> AddToDoAsync(ToDo toDo);
         Task<ToDo> UpdateToDoAsync(ToDo toDo);
         Task DeleteToDoAsync(ToDo toDo);
