@@ -7,9 +7,11 @@ using Tasks.Core.Application.Exceptions;
 using Tasks.Core.Application.Features.ToDos.AddToDo;
 using Tasks.Core.Application.Features.ToDos.CompleteToDo;
 using Tasks.Core.Application.Features.ToDos.DeleteToDo;
+using Tasks.Core.Application.Features.ToDos.GetMostImportantToDo;
 using Tasks.Core.Application.Features.ToDos.GetToDo;
 using Tasks.Core.Application.Features.ToDos.GetToDos;
 using Tasks.Core.Application.Features.ToDos.UpdateToDo;
+using Tasks.Core.Domain.Entities;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Tasks.API.Controllers
@@ -186,6 +188,19 @@ namespace Tasks.API.Controllers
             catch (InvalidOperationException ivdEx)
             {
                 return Conflict(ivdEx.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("mostImportant")]
+        public async Task<IActionResult> MostImportant()
+        {
+            try
+            {
+                return Ok((await _mediator.Send(new GetMostImportantToDoQuery())).ToDo);
             }
             catch (Exception)
             {

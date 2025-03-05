@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Tasks.Core.Application;
 using Tasks.Infrastructure.Persistence;
+using Tasks.Infrastructure.OpenAIServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddApplicationLayer();
 builder.Services.AddPersistenceLayer(builder.Configuration.GetConnectionString("Default"));
+builder.Services.AddOpenAIServices();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
